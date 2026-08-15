@@ -1,0 +1,12 @@
+{
+  "name": "carta-joy-wake-park",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Carta digital de Joy Wake Park (San Juan, Argentina). Sitio estático, sin dependencias.",
+  "scripts": {
+    "build": "node build.mjs",
+    "start": "node build.mjs && node server.mjs",
+    "serve": "node server.mjs"
+  }
+}

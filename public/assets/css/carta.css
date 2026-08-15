@@ -1,0 +1,1145 @@
+/* ==========================================================================
+   Carta Joy Wake Park — hoja de estilos única
+   Paleta: negro, blanco y escala de grises. Sin colores de acento.
+   ========================================================================== */
+
+/* --- Tipografías autohospedadas (subconjunto latino) --------------------- */
+
+@font-face {
+  font-family: 'Fira Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../fonts/FiraSans-700.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Fira Sans';
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../fonts/FiraSans-700i.woff2') format('woff2');
+}
+/* La Black carga en modo `block`: es la del eslogan y los títulos de capítulo.
+   Pesa 10 KB y va preargada desde el mismo origen, así que el bloqueo es
+   imperceptible; a cambio, nunca se ve el salto a una fuente de reserva más
+   ancha que desbordaría el titular a pantalla completa. */
+@font-face {
+  font-family: 'Fira Sans';
+  font-style: normal;
+  font-weight: 900;
+  font-display: block;
+  src: url('../fonts/FiraSans-900.woff2') format('woff2');
+}
+
+/* Reserva con métricas ajustadas: si algo falla, el ancho de línea se
+   mantiene parecido y la maquetación no salta. */
+@font-face {
+  font-family: 'Fira Fallback';
+  src: local('Helvetica Neue'), local('Helvetica'), local('Arial');
+  size-adjust: 94%;
+  ascent-override: 100%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Ubuntu Fallback';
+  src: local('Helvetica Neue'), local('Helvetica'), local('Arial');
+  size-adjust: 99%;
+  ascent-override: 93%;
+  descent-override: 19%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/Ubuntu-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/Ubuntu-400i.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../fonts/Ubuntu-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../fonts/Ubuntu-700.woff2') format('woff2');
+}
+
+/* --- Tokens ------------------------------------------------------------- */
+
+:root {
+  --ink: #0a0a0a;
+  --ink-raised: #131313;
+  --paper: #ffffff;
+
+  /* Grises verificados sobre --ink: 9.9:1 y 5.8:1 -> WCAG AA */
+  --grey-soft: #b9b9b9;
+  --grey-mute: #8d8d8d;
+
+  --hair: rgba(255, 255, 255, 0.13);
+  --hair-strong: rgba(255, 255, 255, 0.28);
+
+  --display: 'Fira Sans', 'Fira Fallback', system-ui, -apple-system, sans-serif;
+  --text: 'Ubuntu', 'Ubuntu Fallback', system-ui, -apple-system, sans-serif;
+
+  --rail-h: 3.5rem;
+  --measure: 62rem;
+
+  /* El viewport va a sangre: el margen lateral suma el área segura del
+     dispositivo para que en apaisado nada quede bajo el notch. */
+  --gutter-base: clamp(1.15rem, 5vw, 2.75rem);
+  --safe-l: env(safe-area-inset-left, 0px);
+  --safe-r: env(safe-area-inset-right, 0px);
+  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --gutter: max(var(--gutter-base), var(--safe-l), var(--safe-r));
+
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* --- Reset y base ------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Evita que iOS agrande el texto al rotar sin bloquear el zoom del usuario */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--text);
+  font-size: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem);
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Las imágenes llevan width/height en el HTML para reservar espacio y evitar
+   saltos de maquetación; `height: auto` mantiene la proporción cuando el CSS
+   cambia el ancho. Las que van a sangre redefinen la altura en su propia regla. */
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+figure {
+  margin: 0;
+  padding: 0;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a,
+button {
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0.12);
+}
+
+/* En pantalla táctil no hay hover: la confirmación del toque es el :active. */
+@media (hover: none) {
+  .toc a:active {
+    background: rgba(255, 255, 255, 0.14);
+  }
+
+  .rail__btn:active,
+  .outro__top:active,
+  .sheet__close:active {
+    background: rgba(255, 255, 255, 0.16);
+  }
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid var(--paper);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 100;
+  transform: translate(-50%, -120%);
+  padding: 0.75rem 1.25rem;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.skip-link:focus-visible {
+  transform: translate(-50%, 0);
+  outline-offset: -4px;
+}
+
+.wrap {
+  width: 100%;
+  max-width: var(--measure);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* --- Portada ------------------------------------------------------------ */
+
+.cover {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding-block:
+    calc(clamp(1.75rem, 5vh, 3rem) + var(--safe-t))
+    calc(clamp(1.5rem, 4vh, 2.5rem) + var(--safe-b));
+  overflow: hidden;
+}
+
+.cover__stage {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background: #000;
+}
+
+.cover__frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(1.06);
+  transition: opacity 1600ms var(--ease), transform 9000ms linear;
+}
+
+.cover__frame:first-of-type {
+  opacity: 1;
+}
+
+/* El JS marca la portada al tomar el control del cruce de escenas. Hasta
+   entonces el primer fotograma queda visible por CSS: si el script no corre,
+   la portada se ve igual de bien. */
+.cover.is-cycling .cover__frame {
+  opacity: 0;
+}
+
+.cover.is-cycling .cover__frame.is-live {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.cover__veil {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.72) 0%,
+      rgba(0, 0, 0, 0.46) 26%,
+      rgba(0, 0, 0, 0.45) 55%,
+      rgba(0, 0, 0, 0.88) 88%,
+      var(--ink) 100%
+    ),
+    radial-gradient(115% 80% at 50% 42%, transparent 30%, rgba(0, 0, 0, 0.62) 100%);
+}
+
+.cover__top,
+.cover__mid,
+.cover__foot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-inline: var(--gutter);
+}
+
+.cover__mid {
+  justify-content: center;
+  gap: clamp(1.1rem, 3.5vh, 1.9rem);
+}
+
+.cover__logo {
+  width: clamp(88px, 22vw, 124px);
+  height: auto;
+  filter: drop-shadow(0 2px 18px rgba(0, 0, 0, 0.7));
+}
+
+.cover__eyebrow {
+  margin-top: 0.9rem;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(0.7rem, 2.8vw, 0.78rem);
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--paper);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9), 0 0 28px rgba(0, 0, 0, 0.75);
+}
+
+/* El eslogan: relleno sólido, sin contorno. El padding superior y el
+   interlineado >1 garantizan que la tilde de la Á nunca se recorte
+   ni toque la línea de arriba. */
+.cover__slogan {
+  display: block;
+  padding-top: 0.16em;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(2.9rem, min(16vw, 19svh), 7.5rem);
+  line-height: 1.06;
+  max-width: 100%;
+  letter-spacing: -0.015em;
+  text-transform: uppercase;
+  color: var(--paper);
+  text-shadow: 0 2px 40px rgba(0, 0, 0, 0.55);
+  overflow: visible;
+}
+
+.cover__slogan span {
+  display: block;
+}
+
+/* La línea con Á lleva su propio aire extra. Medido: la tilde sube 0.27em
+   por encima de la altura de mayúscula, así que con 1.06 de interlineado más
+   este relleno quedan ~0.2em libres entre "NOCHES" y la tilde. */
+.cover__slogan .is-accented {
+  padding-top: 0.14em;
+}
+
+.cover__place {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(0.72rem, 3vw, 0.86rem);
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+  line-height: 1.7;
+  color: var(--paper);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9), 0 0 28px rgba(0, 0, 0, 0.75);
+}
+
+.cover__rule {
+  width: 2.5rem;
+  height: 1px;
+  background: var(--hair-strong);
+}
+
+.cover__foot {
+  gap: 0.7rem;
+}
+
+.cover__cue {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 44px;
+  padding: 0.35rem 1rem;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--paper);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9);
+}
+
+.cover__cue-line {
+  position: relative;
+  display: block;
+  width: 1px;
+  height: 2.4rem;
+  background: var(--hair);
+  overflow: hidden;
+}
+
+.cover__cue-line::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 45%;
+  background: var(--paper);
+  animation: cue 2.4s var(--ease) infinite;
+}
+
+@keyframes cue {
+  0% {
+    transform: translateY(-110%);
+  }
+  60%,
+  100% {
+    transform: translateY(240%);
+  }
+}
+
+/* Celular apaisado: hay mucho ancho y poca altura. La portada se compacta
+   para que el eslogan y la indicación de scroll sigan entrando en pantalla. */
+@media (orientation: landscape) and (max-height: 560px) {
+  .cover {
+    padding-block:
+      calc(0.9rem + var(--safe-t))
+      calc(0.7rem + var(--safe-b));
+  }
+
+  .cover__logo {
+    width: clamp(52px, 11svh, 72px);
+  }
+
+  .cover__eyebrow {
+    margin-top: 0.45rem;
+    letter-spacing: 0.26em;
+  }
+
+  .cover__mid {
+    gap: 0.6rem;
+  }
+
+  .cover__rule {
+    display: none;
+  }
+
+  .cover__place {
+    line-height: 1.45;
+  }
+
+  .cover__cue {
+    gap: 0.3rem;
+  }
+
+  .cover__cue-line {
+    height: 1.1rem;
+  }
+}
+
+/* --- Barra fija --------------------------------------------------------- */
+
+.rail {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: 40;
+  height: calc(var(--rail-h) + var(--safe-t));
+  padding-top: var(--safe-t);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-inline: var(--gutter);
+  background: rgba(10, 10, 10, 0.9);
+  border-bottom: 1px solid var(--hair);
+  transform: translateY(-101%);
+  transition: transform 380ms var(--ease);
+}
+
+@supports (backdrop-filter: blur(14px)) {
+  .rail {
+    background: rgba(10, 10, 10, 0.72);
+    backdrop-filter: blur(14px) saturate(0);
+  }
+}
+
+.rail.is-shown {
+  transform: translateY(0);
+}
+
+.rail__mark {
+  flex: none;
+  width: 26px;
+  height: 26px;
+}
+
+.rail__now {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(0.74rem, 3.2vw, 0.86rem);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+  transition: opacity 200ms var(--ease);
+}
+
+.rail__now.is-swapping {
+  opacity: 0;
+}
+
+.rail__btn {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  min-width: 44px;
+  padding-inline: 0.9rem;
+  justify-content: center;
+  border: 1px solid var(--hair-strong);
+  border-radius: 999px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 0.73rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transition: background-color 200ms var(--ease);
+}
+
+.rail__btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.rail__bars {
+  display: grid;
+  gap: 3px;
+  width: 13px;
+}
+
+.rail__bars i {
+  display: block;
+  height: 1.5px;
+  background: currentColor;
+}
+
+/* --- Índice ------------------------------------------------------------- */
+
+.index {
+  position: relative;
+  isolation: isolate;
+  padding-block: clamp(3.5rem, 11vw, 6.5rem);
+  overflow: hidden;
+}
+
+.index__bg {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.24;
+}
+
+.index::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(to bottom, var(--ink), rgba(10, 10, 10, 0.72) 40%, var(--ink));
+}
+
+.eyebrow {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--grey-mute);
+}
+
+.index__title {
+  margin-top: 0.55rem;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(2rem, 9vw, 3.4rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.index__note {
+  max-width: 46ch;
+  margin-top: 1.1rem;
+  color: var(--grey-soft);
+  font-size: 0.94rem;
+  line-height: 1.6;
+}
+
+.toc {
+  margin-top: clamp(2rem, 6vw, 3rem);
+  border-top: 1px solid var(--hair);
+}
+
+@media (min-width: 46rem) {
+  .toc {
+    columns: 2;
+    column-gap: clamp(2rem, 5vw, 4rem);
+  }
+  .toc li {
+    break-inside: avoid;
+  }
+}
+
+.toc a {
+  display: grid;
+  grid-template-columns: 2.6rem minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 0.75rem;
+  min-height: 46px;
+  padding-block: 0.75rem;
+  border-bottom: 1px solid var(--hair);
+  transition: background-color 180ms var(--ease), padding-inline 180ms var(--ease);
+}
+
+.toc a:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.toc__num,
+.toc__count {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 0.76rem;
+  letter-spacing: 0.1em;
+  color: var(--grey-mute);
+  font-variant-numeric: tabular-nums;
+}
+
+.toc__name {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(1rem, 4.2vw, 1.18rem);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 1.25;
+}
+
+.toc a[aria-current='true'] {
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.toc a[aria-current='true'] .toc__num,
+.toc a[aria-current='true'] .toc__count {
+  color: var(--paper);
+}
+
+/* --- Hoja de índice desplegable ---------------------------------------- */
+
+.sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  background: rgba(8, 8, 8, 0.97);
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 260ms var(--ease), visibility 0s linear 260ms;
+}
+
+@supports (backdrop-filter: blur(20px)) {
+  .sheet {
+    background: rgba(8, 8, 8, 0.9);
+    backdrop-filter: blur(20px) saturate(0);
+  }
+}
+
+.sheet.is-open {
+  visibility: visible;
+  opacity: 1;
+  transition-delay: 0s;
+}
+
+.sheet__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  height: calc(var(--rail-h) + var(--safe-t));
+  padding-top: var(--safe-t);
+  padding-inline: var(--gutter);
+  border-bottom: 1px solid var(--hair);
+}
+
+.sheet__title {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.sheet__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 0.76rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--grey-soft);
+}
+
+.sheet__body {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding-block: 1rem calc(clamp(2rem, 8vw, 4rem) + var(--safe-b));
+  overscroll-behavior: contain;
+}
+
+body.is-locked {
+  overflow: hidden;
+}
+
+/* --- Capítulos ---------------------------------------------------------- */
+
+.chapter {
+  scroll-margin-top: calc(var(--rail-h) + var(--safe-t));
+}
+
+.chapter__opener {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: flex-end;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+}
+
+@media (min-width: 40rem) {
+  .chapter__opener {
+    aspect-ratio: 21 / 8;
+  }
+}
+
+.chapter__photo {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.chapter__opener::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    to bottom,
+    rgba(10, 10, 10, 0.55) 0%,
+    rgba(10, 10, 10, 0.2) 35%,
+    rgba(10, 10, 10, 0.82) 78%,
+    var(--ink) 100%
+  );
+}
+
+.chapter__head {
+  width: 100%;
+  padding-bottom: clamp(1.1rem, 3.5vw, 2rem);
+}
+
+.chapter__num {
+  display: block;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 0.73rem;
+  letter-spacing: 0.3em;
+  color: var(--grey-soft);
+}
+
+.chapter__title {
+  margin-top: 0.35rem;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(2.1rem, 10.5vw, 4.2rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  /* Sin recortes: los descendentes y diacríticos tienen aire propio */
+  padding-bottom: 0.04em;
+}
+
+.chapter__kicker {
+  margin-top: 0.4rem;
+  font-family: var(--text);
+  font-style: italic;
+  font-size: clamp(0.9rem, 3.6vw, 1rem);
+  color: var(--grey-soft);
+}
+
+.chapter__body {
+  padding-block: clamp(0.5rem, 2vw, 1rem) clamp(2.5rem, 8vw, 4.5rem);
+}
+
+.legend {
+  max-width: 54ch;
+  padding-block: 0.85rem 1.1rem;
+  font-size: 0.83rem;
+  line-height: 1.55;
+  color: var(--grey-mute);
+  text-wrap: pretty;
+}
+
+.legend b {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--paper);
+}
+
+/* --- Productos ---------------------------------------------------------- */
+
+.items {
+  border-top: 1px solid var(--hair);
+}
+
+.item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: clamp(0.85rem, 4vw, 3rem);
+  row-gap: 0.3rem;
+  padding-block: clamp(0.95rem, 3.4vw, 1.35rem);
+  border-bottom: 1px solid var(--hair);
+}
+
+.item__main {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+}
+
+.item__name {
+  font-family: var(--text);
+  font-weight: 700;
+  font-size: clamp(1.02rem, 4.1vw, 1.15rem);
+  line-height: 1.28;
+  letter-spacing: 0.002em;
+  text-wrap: pretty;
+}
+
+.item__desc {
+  margin-top: 0.22rem;
+  max-width: 52ch;
+  font-style: italic;
+  font-size: clamp(0.88rem, 3.5vw, 0.95rem);
+  line-height: 1.5;
+  color: var(--grey-soft);
+  text-wrap: pretty;
+}
+
+.item__price {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: start;
+  padding-top: 0.1em;
+}
+
+.tags {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-left: 0.5rem;
+  vertical-align: 0.12em;
+}
+
+.tag {
+  display: inline-block;
+  padding: 0.2em 0.55em 0.16em;
+  border: 1px solid var(--hair-strong);
+  border-radius: 999px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  line-height: 1.35;
+  white-space: nowrap;
+  color: var(--grey-soft);
+}
+
+.tag--sintacc {
+  border-color: rgba(255, 255, 255, 0.5);
+  color: var(--paper);
+}
+
+/* --- Precios ------------------------------------------------------------ */
+
+.price {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.price--one {
+  font-weight: 700;
+  font-size: clamp(1.02rem, 4.1vw, 1.15rem);
+  line-height: 1.28;
+}
+
+.price--dual {
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: end;
+  align-items: baseline;
+  column-gap: 0.55rem;
+  row-gap: 0.1rem;
+}
+
+.price__lbl {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-align: right;
+  color: var(--grey-mute);
+}
+
+.price__num {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.price__num--reg {
+  font-weight: 400;
+  font-size: 0.9rem;
+  color: var(--grey-mute);
+}
+
+.price__lbl--cash {
+  color: var(--paper);
+}
+
+.price__num--cash {
+  font-weight: 700;
+  font-size: clamp(1.02rem, 4.1vw, 1.15rem);
+  color: var(--paper);
+}
+
+.item__note {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  margin-top: 0.45rem;
+  padding-left: 0.7rem;
+  border-left: 1px solid var(--hair-strong);
+  font-size: 0.83rem;
+  line-height: 1.5;
+  color: var(--grey-mute);
+}
+
+/* En pantalla ancha sobra sitio horizontal: el precio doble pasa a una sola
+   línea y las filas dejan de quedar altas y vacías. */
+@media (min-width: 48rem) {
+  .price--dual {
+    grid-template-columns: auto auto auto auto;
+    column-gap: 0.5rem;
+  }
+
+  .price__lbl--cash {
+    margin-left: 1.35rem;
+  }
+
+  .item {
+    padding-block: 1.15rem;
+  }
+}
+
+/* --- Cierre ------------------------------------------------------------- */
+
+.outro {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  gap: 1.1rem;
+  min-height: 68svh;
+  padding: clamp(3rem, 10vw, 6rem) var(--gutter);
+  padding-bottom: calc(clamp(3rem, 10vw, 6rem) + var(--safe-b));
+  text-align: center;
+  overflow: hidden;
+}
+
+.outro__bg {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.4;
+}
+
+.outro::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(to bottom, var(--ink), rgba(10, 10, 10, 0.6) 45%, var(--ink));
+}
+
+.outro__logo {
+  width: clamp(78px, 20vw, 104px);
+}
+
+.outro__slogan {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(1.9rem, 9vw, 3.2rem);
+  line-height: 1.22;
+  letter-spacing: -0.015em;
+  text-transform: uppercase;
+  padding-top: 0.1em;
+}
+
+.outro__meta {
+  max-width: 40ch;
+  color: var(--grey-soft);
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+.outro__top {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding-inline: 1.2rem;
+  border: 1px solid var(--hair-strong);
+  border-radius: 999px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 0.73rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.outro__legal {
+  font-size: 0.78rem;
+  color: var(--grey-mute);
+  line-height: 1.6;
+}
+
+/* --- Aparición suave ---------------------------------------------------- */
+
+/* Sin la clase que agrega el JS, nada se oculta: el contenido nunca depende
+   de que el script llegue a ejecutarse. */
+.js-reveal .reveal {
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
+  transition: opacity 620ms var(--ease), transform 620ms var(--ease);
+}
+
+.js-reveal .reveal.is-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* --- Preferencias de movimiento reducido -------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .cover__frame {
+    transform: none;
+  }
+
+  .js-reveal .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  .cover__cue-line::after {
+    animation: none;
+    height: 100%;
+    background: var(--hair-strong);
+  }
+}
+
+/* --- Impresión ---------------------------------------------------------- */
+
+@media print {
+  body {
+    background: #fff;
+    color: #000;
+  }
+
+  .cover,
+  .rail,
+  .sheet,
+  .chapter__opener,
+  .outro__bg {
+    display: none !important;
+  }
+
+  .item,
+  .items {
+    border-color: #ccc;
+  }
+}
