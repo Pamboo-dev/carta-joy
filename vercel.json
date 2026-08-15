@@ -2,41 +2,39 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "node build.mjs",
   "outputDirectory": "public",
-  "cleanUrls": true,
-  "trailingSlash": false,
+  "installCommand": "echo 'sin dependencias'",
+  "framework": null,
   "headers": [
     {
-      "source": "/assets/fonts/(.*)",
+      "source": "/assets/fonts/:file*",
       "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]
     },
     {
-      "source": "/assets/(img|css|js)/(.*)",
+      "source": "/assets/img/:file*",
       "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=2592000, stale-while-revalidate=86400"
-        }
+        { "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=604800" }
       ]
     },
     {
-      "source": "/(.*)",
+      "source": "/assets/css/:file*",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+        { "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=604800" }
+      ]
+    },
+    {
+      "source": "/assets/js/:file*",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=604800" }
       ]
     },
     {
       "source": "/",
       "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
       ]
     }
   ]

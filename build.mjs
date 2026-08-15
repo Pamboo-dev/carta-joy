@@ -13,6 +13,7 @@
  */
 
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
@@ -299,6 +300,18 @@ ${chapters}
 
 const MIME = { '.jpg': 'image/jpeg', '.png': 'image/png', '.woff2': 'font/woff2' };
 
+/**
+ * Huella del contenido, para colgar de la URL como `?v=`.
+ *
+ * Las cabeceras de caché guardan los assets un mes. Sin esto, al cambiar un
+ * precio el navegador podría combinar el HTML nuevo con un CSS viejo: la URL
+ * cambia solo cuando cambia el contenido, así que la combinación es imposible.
+ */
+async function stamp(path) {
+  const buf = await readFile(path);
+  return createHash('sha256').update(buf).digest('hex').slice(0, 8);
+}
+
 async function dataUri(path) {
   const buf = await readFile(path);
   const ext = path.slice(path.lastIndexOf('.'));
@@ -309,17 +322,26 @@ async function main() {
   const tpl = await document_();
 
   /* --- 1. sitio estático con assets sueltos --- */
-  const multi = tpl
-    .replace(/\{\{IMG\}\}/g, 'assets/img/')
+  let multi = tpl;
+
+  for (const file of new Set([...tpl.matchAll(/\{\{IMG\}\}([\w.-]+)/g)].map((m) => m[1]))) {
+    const v = await stamp(join(IMG, file));
+    multi = multi.replaceAll(`{{IMG}}${file}`, `assets/img/${file}?v=${v}`);
+  }
+
+  const cssV = await stamp(join(SITE, 'assets', 'css', 'carta.css'));
+  const jsV = await stamp(join(SITE, 'assets', 'js', 'carta.js'));
+
+  multi = multi
     .replace(
       '{{HEAD}}',
       [
         '<link rel="preload" href="assets/fonts/FiraSans-900.woff2" as="font" type="font/woff2" crossorigin>',
         '<link rel="preload" href="assets/fonts/Ubuntu-400.woff2" as="font" type="font/woff2" crossorigin>',
-        '<link rel="stylesheet" href="assets/css/carta.css">',
+        `<link rel="stylesheet" href="assets/css/carta.css?v=${cssV}">`,
       ].join('\n')
     )
-    .replace('{{FOOT}}', '<script src="assets/js/carta.js" defer></script>');
+    .replace('{{FOOT}}', `<script src="assets/js/carta.js?v=${jsV}" defer></script>`);
 
   await writeFile(join(SITE, 'index.html'), multi);
 
