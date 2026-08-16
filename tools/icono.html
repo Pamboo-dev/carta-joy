@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Ícono</title>
+<!--
+  Ícono de pestaña y de pantalla de inicio. Se fotografía a 512x512 y queda en
+  public/assets/img/icono.png. Instrucciones en README, "Imagen al compartir".
+
+  El logo original es trazo blanco sobre transparente: sobre la barra clara de
+  una pestaña desaparece, y en la pantalla de inicio queda a merced de cómo
+  cada sistema rellene el fondo. Por eso el ícono trae el suyo.
+-->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #555; }
+
+  .icon {
+    width: 512px;
+    height: 512px;
+    background: #0a0a0a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* iOS y Android recortan las esquinas por su cuenta, así que el fondo va a
+     sangre y el logo se queda con margen de sobra para sobrevivir el recorte. */
+  .icon img {
+    /* El trazo ocupa el 78 % del PNG, así que 340 px de caja son ~264 px de
+       tinta: poco más de la mitad del ícono, que es donde un logo circular
+       queda cómodo sin rozar el recorte redondeado. */
+    width: 340px;
+    height: auto;
+  }
+</style>
+</head>
+<body>
+<div class="icon" id="icon">
+  <img src="../public/assets/img/logo-joy.png" alt="">
+</div>
+</body>
+</html>

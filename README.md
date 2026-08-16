@@ -35,6 +35,10 @@ build.mjs                    Genera el HTML ya renderizado a partir de data/menu
 server.mjs                   Servidor estático mínimo (módulos nativos de Node).
 vercel.json                  Configuración de despliegue y cabeceras de caché.
 
+tools/                       No se despliega. Plantillas de imágenes fijas.
+  og.html, og-fondo.jpg      Tarjeta que se ve al compartir el enlace.
+  icono.html                 Ícono de pestaña y de pantalla de inicio.
+
 public/                      <- ESTO ES LO QUE SE DESPLIEGA
   index.html                 Generado por build.mjs.
   assets/css/carta.css       Estilos.
@@ -86,6 +90,33 @@ Las cabeceras que quedan configuradas:
 | `/assets/fonts/*` | 1 año, inmutable (el contenido nunca cambia) |
 | `/assets/{img,css,js}/*` | 30 días con revalidación en segundo plano |
 | `/` | siempre revalida, así un cambio de precio se ve al instante |
+
+## Imagen al compartir
+
+Al pegar el enlace en WhatsApp, Instagram o Facebook aparece
+`public/assets/img/og.jpg`: 1200×630, la portada con el logo y "Noches mágicas".
+Sin ella los chats caen al ícono, y el logo original es trazo blanco sobre fondo
+transparente: se ve un cuadrado en blanco.
+
+La dirección de la imagen tiene que ser **absoluta**, así que el build la arma
+con el dominio de producción que Vercel expone en `VERCEL_PROJECT_PRODUCTION_URL`.
+Cuando se conecte un dominio propio, la tarjeta lo toma sola. Para generar fuera
+de Vercel: `SITE_URL=https://mi-dominio node build.mjs`.
+
+Las dos imágenes son fijas y se rehacen a mano, fotografiando las plantillas de
+`tools/` con Chrome. Desde la raíz del proyecto:
+
+```bash
+python3 -m http.server 8765 &
+open -a "Google Chrome" http://127.0.0.1:8765/tools/og.html
+```
+
+Se fotografía `og.html` a 1200×630 y `icono.html` a 512×512, y el resultado va a
+`public/assets/img/og.jpg` (JPEG gris) e `icono.png`.
+
+Los chats **cachean la vista previa por URL**. Si se cambia la tarjeta, el `?v=`
+del build cambia solo con el contenido y la vuelven a pedir; para forzarlo antes,
+se comparte el enlace con cualquier parámetro pegado (`…vercel.app/?x=1`).
 
 ## Decisiones
 

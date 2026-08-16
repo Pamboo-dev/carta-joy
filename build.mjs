@@ -24,6 +24,22 @@ const ROOT = dirname(fileURLToPath(import.meta.url));
 const SITE = join(ROOT, 'public');
 const IMG = join(SITE, 'assets', 'img');
 
+/**
+ * Origen público, sin barra final.
+ *
+ * WhatsApp, Instagram y Facebook exigen URL absoluta en `og:image`: con una
+ * ruta relativa no muestran ninguna vista previa. Vercel expone el dominio de
+ * producción en `VERCEL_PROJECT_PRODUCTION_URL` —el propio si hay uno
+ * conectado—, así que el día que se apunte joywakepark.com la tarjeta lo sigue
+ * sola. Fuera de Vercel queda el dominio actual, y `SITE_URL` permite forzarlo.
+ */
+const ORIGIN = (
+  process.env.SITE_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : 'https://carta-joy.vercel.app')
+).replace(/\/+$/, '');
+
 /* -- utilidades ---------------------------------------------------------- */
 
 const esc = (s) =>
@@ -195,6 +211,10 @@ async function document_() {
 
   const logo = await assetSize('logo-joy.png');
   const indexBg = await assetSize('c_indice.jpg');
+  // Absoluta y con huella: los chats cachean la vista previa por URL de imagen,
+  // así que si algún día cambia la tarjeta, cambia la dirección y la vuelven a
+  // pedir en vez de seguir mostrando la vieja.
+  const ogImg = `${ORIGIN}/assets/img/og.jpg?v=${await stamp(join(IMG, 'og.jpg'))}`;
 
   const chapters = (
     await Promise.all(CATEGORIES.map((cat, i) => chapterHtml(cat, i, total)))
@@ -209,11 +229,22 @@ async function document_() {
 <meta name="description" content="Carta digital de Joy Wake Park, San Juan. ${count} productos en ${total} capítulos: cocina, pizzas, vinos, tragos, botellas y promos previas.">
 <meta name="theme-color" content="#0a0a0a">
 <meta name="color-scheme" content="dark">
+<link rel="canonical" href="${ORIGIN}/">
 <meta property="og:title" content="Joy Wake Park · Noches mágicas">
-<meta property="og:description" content="La carta completa de Joy Wake Park, San Juan.">
+<meta property="og:description" content="La carta completa: ${count} productos en ${total} capítulos. Cocina, pizzas, vinos, tragos y botellas.">
 <meta property="og:type" content="website">
-<link rel="icon" href="{{IMG}}logo-joy.png" type="image/png">
-<link rel="apple-touch-icon" href="{{IMG}}logo-joy.png">
+<meta property="og:url" content="${ORIGIN}/">
+<meta property="og:site_name" content="Joy Wake Park">
+<meta property="og:locale" content="es_AR">
+<meta property="og:image" content="${ogImg}">
+<meta property="og:image:secure_url" content="${ogImg}">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Noches mágicas — Joy Wake Park, San Juan. Multitud con los brazos en alto bajo los haces de luz de un evento nocturno junto al lago.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="{{IMG}}icono.png" type="image/png" sizes="512x512">
+<link rel="apple-touch-icon" href="{{IMG}}icono.png">
 {{HEAD}}
 </head>
 <body>

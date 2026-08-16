@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Tarjeta para compartir</title>
+<!--
+  Plantilla de la imagen que ven WhatsApp, Instagram y demás al pegar el enlace.
+  No se despliega: se fotografía a 1200x630 y el resultado es
+  public/assets/img/og.jpg. Instrucciones en README, "Imagen al compartir".
+
+  El texto se repite acá en vez de leerse de data/menu.js porque esto se
+  fotografía a mano cada muerte de obispo; una dependencia de build por una
+  imagen que casi nunca cambia costaría más de lo que ahorra.
+-->
+<style>
+  @font-face {
+    font-family: 'Fira Sans';
+    src: url('../public/assets/fonts/FiraSans-900.woff2') format('woff2');
+    font-weight: 900;
+    font-style: normal;
+    font-display: block;
+  }
+  @font-face {
+    font-family: 'Fira Sans';
+    src: url('../public/assets/fonts/FiraSans-700.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: block;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body { background: #0a0a0a; }
+
+  /* Medidas fijas: esto no es una página responsive, es un lienzo de 1200x630. */
+  .card {
+    position: relative;
+    width: 1200px;
+    height: 630px;
+    overflow: hidden;
+    background: #0a0a0a;
+  }
+
+  .card__photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Dos velos: uno parejo que baja el brillo general y otro más denso arriba y
+     abajo, donde apoyan el logo y el pie. Los haces de luz de la foto llegan a
+     blanco puro y sin esto se comerían el texto. */
+  .card__veil {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(120% 85% at 50% 50%, rgba(10, 10, 10, 0.18) 0%, rgba(10, 10, 10, 0.62) 100%),
+      linear-gradient(to bottom, rgba(10, 10, 10, 0.78) 0%, rgba(10, 10, 10, 0.24) 32%, rgba(10, 10, 10, 0.28) 62%, rgba(10, 10, 10, 0.82) 100%);
+  }
+
+  .card__body {
+    position: relative;
+    height: 100%;
+    padding: 44px 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+  }
+
+  .card__logo {
+    width: 104px;
+    height: auto;
+    filter: drop-shadow(0 2px 18px rgba(0, 0, 0, 0.7));
+  }
+
+  .card__eyebrow {
+    margin-top: 14px;
+    font-family: 'Fira Sans', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.34em;
+    /* La última letra también arrastra su espaciado y descentra el bloque. */
+    text-indent: 0.34em;
+    text-transform: uppercase;
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9), 0 0 28px rgba(0, 0, 0, 0.75);
+  }
+
+  .card__slogan {
+    margin-top: 26px;
+    font-family: 'Fira Sans', sans-serif;
+    font-weight: 900;
+    font-size: 108px;
+    line-height: 1.06;
+    letter-spacing: -0.015em;
+    text-transform: uppercase;
+    text-shadow: 0 2px 40px rgba(0, 0, 0, 0.55);
+  }
+
+  /* Mismo criterio que la portada: la línea de la Á necesita aire propio, si no
+     la tilde toca el trazo de NOCHES. */
+  .card__slogan span { display: block; }
+  .card__slogan .is-accented { padding-top: 0.14em; }
+
+  .card__rule {
+    width: 40px;
+    height: 1px;
+    margin-top: 26px;
+    background: rgba(255, 255, 255, 0.28);
+  }
+
+  .card__place {
+    margin-top: 22px;
+    font-family: 'Fira Sans', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.17em;
+    text-indent: 0.17em;
+    line-height: 1.7;
+    text-transform: uppercase;
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9), 0 0 28px rgba(0, 0, 0, 0.75);
+  }
+
+  /* Anclado abajo para que quede fuera del recorte cuadrado que hacen algunos
+     chats: es contexto útil, no información que se pueda perder. */
+  .card__tag {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 34px;
+    font-family: 'Fira Sans', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.3em;
+    text-indent: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.72);
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9);
+  }
+</style>
+</head>
+<body>
+<div class="card" id="card">
+  <img class="card__photo" src="og-fondo.jpg" alt="">
+  <div class="card__veil"></div>
+  <div class="card__body">
+    <img class="card__logo" src="../public/assets/img/logo-joy.png" alt="">
+    <p class="card__eyebrow">Bar · Wake Park · Eventos</p>
+    <h1 class="card__slogan">
+      <span>Noches</span><span class="is-accented">Mágicas</span>
+    </h1>
+    <span class="card__rule"></span>
+    <p class="card__place">Joy Wake Park<br>San Juan · Argentina</p>
+    <p class="card__tag">Carta digital · Temporada 2026</p>
+  </div>
+</div>
+</body>
+</html>
