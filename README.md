@@ -67,16 +67,14 @@ sumaría peso y tiempo de arranque sin agregar nada visible.
 
 ## Desplegar en Vercel
 
-El repo está listo: `vercel.json` ya define el build, la carpeta de salida y las
-cabeceras de caché.
+Repo: <https://github.com/Pamboo-dev/carta-joy> (rama `main`). `vercel.json` ya
+define el build, la carpeta de salida y las cabeceras de caché.
 
-```bash
-git init && git add -A && git commit -m "Carta Joy Wake Park"
-gh repo create carta-joy --private --source=. --push   # o creá el repo a mano
-```
+En Vercel: **Add New → Project → importás `Pamboo-dev/carta-joy` → Deploy**. No hay
+que tocar ninguna opción: detecta `vercel.json` solo. Sin variables de entorno.
 
-Después, en Vercel: **Add New → Project → importás el repo → Deploy**. No hay que
-tocar ninguna opción: detecta `vercel.json` solo. Sin variables de entorno.
+Para actualizar la carta después: se edita `data/menu.js` y se hace `git push`.
+Vercel redespliega solo.
 
 Para dominio propio: **Settings → Domains** y apuntás el DNS. Ese es el dominio
 que conviene poner en el QR, no la URL `*.vercel.app`.
