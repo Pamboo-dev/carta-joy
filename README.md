@@ -38,6 +38,13 @@ vercel.json                  Configuración de despliegue y cabeceras de caché.
 tools/                       No se despliega. Plantillas de imágenes fijas.
   og.html, og-fondo.jpg      Tarjeta que se ve al compartir el enlace.
   icono.html                 Ícono de pestaña y de pantalla de inicio.
+  qr.py                      Genera el QR.
+  tarjeta.html               Tarjeta A6 para las mesas.
+
+impresion/                   No se despliega. Archivos listos para la imprenta.
+  qr-joy.svg                 QR en vector, con el logo al centro.
+  qr-joy.png                 El mismo QR, 2000 px.
+  tarjeta-mesa-a6.pdf        Tarjeta A6 con sangría de 3 mm.
 
 public/                      <- ESTO ES LO QUE SE DESPLIEGA
   index.html                 Generado por build.mjs.
@@ -117,6 +124,38 @@ Se fotografía `og.html` a 1200×630 y `icono.html` a 512×512, y el resultado v
 Los chats **cachean la vista previa por URL**. Si se cambia la tarjeta, el `?v=`
 del build cambia solo con el contenido y la vuelven a pedir; para forzarlo antes,
 se comparte el enlace con cualquier parámetro pegado (`…vercel.app/?x=1`).
+
+## QR para las mesas
+
+En `impresion/`. El SVG es el que va a la imprenta: al ser vector no tiene
+resolución que se quede corta, sirve igual para una tarjeta de mesa que para un
+cartel.
+
+**Antes de imprimir, definir el dominio.** El QR lleva la dirección adentro: si
+se imprimen mil calcos con `carta-joy.vercel.app` y después se pasa a un dominio
+propio, hay que reimprimirlos todos. Con dominio propio, en cambio, se puede
+cambiar de hosting cuando sea sin tocar un solo calco. Para regenerarlo:
+
+```bash
+uv run --with segno tools/qr.py https://carta.joywakepark.com
+```
+
+El símbolo mide 33×33 módulos con las dos direcciones, así que cambiar de
+dominio no altera el diseño ni las medidas de la tarjeta.
+
+**Tamaño mínimo al imprimir.** El símbolo tiene 41 módulos contando la zona
+muda. La regla práctica es que el lado del QR sea al menos la décima parte de la
+distancia desde la que se escanea: 3 cm para una tarjeta de mesa que se levanta
+con la mano, 6 cm o más para uno pegado en la barra que se lee desde un metro.
+La tarjeta A6 lo lleva a 5,8 cm, con holgura.
+
+**Verificado, no supuesto.** El QR se decodifica correctamente reducido hasta
+3,3 px por módulo, con desenfoque, ruido de sensor, contraste al 45 % y en
+cualquier ángulo de rotación. El logo del centro tapa el 8,2 % del símbolo y la
+corrección de errores es la más alta (H, tolera 30 %).
+
+Para regenerar la tarjeta hay que fotografiar `tools/tarjeta.html` con Chrome e
+imprimirla a PDF con tamaño de papel 111×154 mm y sin márgenes.
 
 ## Decisiones
 

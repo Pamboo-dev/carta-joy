@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Tarjeta de mesa</title>
+<!--
+  Tarjeta A6 para las mesas. Se imprime a PDF desde Chrome; instrucciones en
+  README, "QR para las mesas".
+
+  Medidas: A6 es 105x148 mm. El lienzo va a 111x154 porque lleva 3 mm de
+  sangría por lado —el fondo negro tiene que pasarse del corte, si no queda
+  una raya blanca cuando la guillotina se corre—. El contenido se mantiene a
+  8 mm de la línea de corte por el mismo motivo, al revés.
+-->
+<style>
+  @font-face {
+    font-family: 'Fira Sans';
+    src: url('../public/assets/fonts/FiraSans-900.woff2') format('woff2');
+    font-weight: 900; font-style: normal; font-display: block;
+  }
+  @font-face {
+    font-family: 'Fira Sans';
+    src: url('../public/assets/fonts/FiraSans-700.woff2') format('woff2');
+    font-weight: 700; font-style: normal; font-display: block;
+  }
+  @font-face {
+    font-family: 'Ubuntu';
+    src: url('../public/assets/fonts/Ubuntu-500.woff2') format('woff2');
+    font-weight: 500; font-style: normal; font-display: block;
+  }
+
+  @page { size: 111mm 154mm; margin: 0; }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body { background: #55565a; }
+
+  .tarjeta {
+    width: 111mm;
+    height: 154mm;
+    background: #0a0a0a;
+    /* 3 mm de sangría + 8 mm hasta la zona segura. */
+    padding: 11mm;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    color: #fff;
+    overflow: hidden;
+  }
+
+  .tarjeta__logo { width: 17mm; height: auto; }
+
+  .tarjeta__eyebrow {
+    margin-top: 3mm;
+    font-family: 'Fira Sans', sans-serif;
+    font-weight: 700;
+    font-size: 6.4pt;
+    letter-spacing: 0.3em;
+    text-indent: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.66);
+  }
+
+  .tarjeta__titulo {
+    margin-top: 5.5mm;
+    font-family: 'Fira Sans', sans-serif;
+    font-weight: 900;
+    font-size: 21pt;
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+  }
+
+  /* Módulos negros sobre blanco: de noche es lo único que lee sin dudar.
+     El panel blanco además le da al símbolo su zona muda con holgura. */
+  .tarjeta__panel {
+    margin-top: 6mm;
+    width: 62mm;
+    height: 62mm;
+    background: #fff;
+    border-radius: 3mm;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .tarjeta__panel img {
+    width: 58mm;
+    height: 58mm;
+    display: block;
+  }
+
+  /* Si el QR falla —cámara vieja, pantalla rota, lo que sea— la dirección
+     escrita salva la situación. Por eso el dominio conviene que sea corto. */
+  .tarjeta__url {
+    margin-top: 4.5mm;
+    font-family: 'Ubuntu', sans-serif;
+    font-weight: 500;
+    font-size: 8.5pt;
+    letter-spacing: 0.02em;
+    color: rgba(255, 255, 255, 0.82);
+  }
+
+  .tarjeta__pie {
+    margin-top: auto;
+    font-family: 'Fira Sans', sans-serif;
+    font-weight: 700;
+    font-size: 6.6pt;
+    letter-spacing: 0.24em;
+    text-indent: 0.24em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+  }
+</style>
+</head>
+<body>
+<div class="tarjeta" id="tarjeta">
+  <img class="tarjeta__logo" src="../public/assets/img/logo-joy.png" alt="">
+  <p class="tarjeta__eyebrow">Bar · Wake Park · Eventos</p>
+  <h1 class="tarjeta__titulo">Escaneá<br>la carta</h1>
+  <div class="tarjeta__panel">
+    <img src="../impresion/qr-joy.svg" alt="Código QR de la carta">
+  </div>
+  <p class="tarjeta__url">carta-joy.vercel.app</p>
+  <p class="tarjeta__pie">Joy Wake Park · San Juan</p>
+</div>
+</body>
+</html>
