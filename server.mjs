@@ -1,7 +1,7 @@
 /**
  * Servidor estático mínimo para ver la carta en local.
  *
- *   node server.mjs           -> http://localhost:4173
+ *   node server.mjs           -> http://localhost:4174
  *   PORT=8080 node server.mjs
  *
  * Sin dependencias: solo módulos nativos de Node.
@@ -15,7 +15,7 @@ import { dirname } from 'node:path';
 import { networkInterfaces } from 'node:os';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), 'public');
-const PORT = Number(process.env.PORT) || 4173;
+const PORT = Number(process.env.PORT) || 4174;
 
 const TYPES = {
   '.html': 'text/html; charset=utf-8',
