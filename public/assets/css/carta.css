@@ -403,6 +403,22 @@ button {
   text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9);
 }
 
+/* La firma en portada va debajo de la señal de scroll, en el borde donde el
+   velo ya llegó a negro pleno: se lee sin pelearle a la foto. No es enlace,
+   a diferencia de la del cierre: pegada al único llamado a la acción de la
+   portada, un segundo destino táctil ahí solo genera toques equivocados. */
+.cover__credito {
+  margin-top: 0.55rem;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-indent: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.58);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9);
+}
+
 .cover__cue-line {
   position: relative;
   display: block;
@@ -468,6 +484,13 @@ button {
 
   .cover__cue-line {
     height: 1.1rem;
+  }
+
+  /* Acá la altura es lo escaso y la portada ya entra justa: la firma se cae.
+     Medido, no supuesto: con ella el renglón queda cortado por el borde, que
+     es peor que no estar. Sigue apareciendo en el cierre de la carta. */
+  .cover__credito {
+    display: none;
   }
 }
 
@@ -1074,6 +1097,41 @@ body.is-locked {
   font-size: 0.78rem;
   color: var(--grey-mute);
   line-height: 1.6;
+}
+
+/* La firma de quien hizo la carta va última y en el tono más bajo de la
+   página: es un colofón, no una publicidad. El nombre se distingue por ser
+   más claro que la línea que lo rodea, no por color de marca ni por subrayado
+   permanente, que en un menú competirían con los precios. */
+.outro__credito {
+  margin-top: 0.4rem;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 0.64rem;
+  letter-spacing: 0.16em;
+  text-indent: 0.16em;
+  text-transform: uppercase;
+  color: var(--grey-mute);
+}
+
+.outro__firma {
+  color: var(--grey-soft);
+  border-bottom: 1px solid var(--hair);
+  padding-bottom: 0.15em;
+  transition: color 180ms var(--ease), border-color 180ms var(--ease);
+}
+
+@media (hover: hover) {
+  .outro__firma:hover {
+    color: var(--paper);
+    border-bottom-color: var(--hair-strong);
+  }
+}
+
+@media (hover: none) {
+  .outro__firma:active {
+    color: var(--paper);
+  }
 }
 
 /* --- Aparición suave ---------------------------------------------------- */

@@ -243,6 +243,8 @@ async function document_() {
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Noches mágicas — Joy Wake Park, San Juan. Multitud con los brazos en alto bajo los haces de luz de un evento nocturno junto al lago.">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="author" content="Pamboo">
+<link rel="author" href="https://pamboo.co">
 <link rel="icon" href="{{IMG}}icono.png" type="image/png" sizes="512x512">
 <link rel="apple-touch-icon" href="{{IMG}}icono.png">
 {{HEAD}}
@@ -274,6 +276,7 @@ async function document_() {
       <span class="cover__cue-line" aria-hidden="true"></span>
       Deslizá para explorar
     </a>
+    <p class="cover__credito">Diseño y desarrollo <span aria-hidden="true">·</span> Pamboo</p>
   </div>
 </header>
 
@@ -309,6 +312,7 @@ ${chapters}
   <p class="outro__meta">${esc(BRAND.name)} · ${esc(BRAND.place)}<br>${esc(BRAND.season)}</p>
   <a class="outro__top" href="#carta">Volver al índice</a>
   <p class="outro__legal">Precios sujetos a modificación sin previo aviso.</p>
+  <p class="outro__credito">Diseño y desarrollo <span aria-hidden="true">·</span> <a class="outro__firma" href="https://pamboo.co" target="_blank" rel="noopener">Pamboo</a></p>
 </footer>
 
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-t" aria-hidden="true">
