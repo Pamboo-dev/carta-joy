@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """
-Genera el QR de la carta, en vector y en mapa de bits.
+Genera el QR de la carta, en vector.
 
     uv run --with segno tools/qr.py
-    uv run --with segno tools/qr.py https://carta.joywakepark.com
+    uv run --with segno tools/qr.py https://joy.pamboo.co/
 
-Sale en impresion/qr-joy.svg y impresion/qr-joy.png. El SVG es el que se le
-manda a la imprenta: al ser vector no tiene resolución que se quede corta.
+Sale en impresion/qr-joy.svg, que es el que se le manda a la imprenta: al ser
+vector no tiene resolución que se quede corta. El PNG de 2000 px que lo acompaña
+se rasteriza aparte con Chrome (ver README, "QR para las mesas"): acá no se
+genera porque segno no compone el logo del centro.
 
 Decisiones que conviene no tocar sin entender por qué:
 
@@ -28,7 +30,7 @@ RAIZ = Path(__file__).resolve().parent.parent
 SALIDA = RAIZ / "impresion"
 LOGO = RAIZ / "public" / "assets" / "img" / "logo-joy.png"
 
-URL = sys.argv[1] if len(sys.argv) > 1 else "https://carta-joy.vercel.app"
+URL = sys.argv[1] if len(sys.argv) > 1 else "https://joy.pamboo.co/"
 
 BORDE = 4          # zona muda, en módulos
 LADO_LOGO = 0.26   # proporción del ancho total que ocupa el disco del logo

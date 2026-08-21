@@ -25,20 +25,20 @@ const SITE = join(ROOT, 'public');
 const IMG = join(SITE, 'assets', 'img');
 
 /**
- * Origen público, sin barra final.
+ * Origen público, sin barra final. Es el mismo dominio que lleva el QR impreso.
  *
  * WhatsApp, Instagram y Facebook exigen URL absoluta en `og:image`: con una
- * ruta relativa no muestran ninguna vista previa. Vercel expone el dominio de
- * producción en `VERCEL_PROJECT_PRODUCTION_URL` —el propio si hay uno
- * conectado—, así que el día que se apunte joywakepark.com la tarjeta lo sigue
- * sola. Fuera de Vercel queda el dominio actual, y `SITE_URL` permite forzarlo.
+ * ruta relativa no muestran ninguna vista previa. Va escrito acá, y no leído de
+ * `VERCEL_PROJECT_PRODUCTION_URL`, porque ese valor queda congelado en el build:
+ * el deploy vivo siguió anunciando el `*.vercel.app` viejo mucho después de
+ * conectar el dominio propio, y las vistas previas apuntaban a un dominio
+ * muerto. El dominio impreso en papel no puede depender de una variable de
+ * entorno. `SITE_URL` permite forzarlo para pruebas.
+ *
+ * Si cambia el dominio: se cambia acá, se regenera el QR (tools/qr.py) y se
+ * reimprime la tarjeta.
  */
-const ORIGIN = (
-  process.env.SITE_URL ||
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : 'https://carta-joy.vercel.app')
-).replace(/\/+$/, '');
+const ORIGIN = (process.env.SITE_URL || 'https://joy.pamboo.co').replace(/\/+$/, '');
 
 /* -- utilidades ---------------------------------------------------------- */
 

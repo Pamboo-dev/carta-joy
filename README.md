@@ -4,7 +4,7 @@ Carta digital de **Joy Wake Park** (San Juan, Argentina). Reemplazo del PDF actu
 por una experiencia de scroll continuo, mobile-first, sin publicidad, sin zoom y
 sin pantallas intermedias.
 
-- **16 capítulos · 144 productos**, transcriptos del PDF original.
+- **16 capítulos · 150 productos**, transcriptos del PDF original más los agregados del local.
 - **Cero dependencias**: HTML, CSS y JavaScript sin librerías ni framework.
 - **12,7 KB** comprimidos de HTML + CSS + JS para toda la carta.
 - **Sin red**: tipografías e imágenes se sirven desde el propio proyecto.
@@ -63,7 +63,7 @@ producto se edita `data/menu.js` y se corre `npm run build`.
 
 ## Por qué no hay framework
 
-La carta es contenido: 144 productos que no cambian entre visitas y una sola capa
+La carta es contenido: 150 productos que no cambian entre visitas y una sola capa
 de navegación. Todo el HTML se genera en el build, así que no hay nada que
 hidratar en el navegador.
 
@@ -87,8 +87,17 @@ que tocar ninguna opción: detecta `vercel.json` solo. Sin variables de entorno.
 Para actualizar la carta después: se edita `data/menu.js` y se hace `git push`.
 Vercel redespliega solo.
 
-Para dominio propio: **Settings → Domains** y apuntás el DNS. Ese es el dominio
-que conviene poner en el QR, no la URL `*.vercel.app`.
+Dominio de producción: **<https://joy.pamboo.co/>**, conectado en Vercel
+(**Settings → Domains**). Es el único dominio de la carta: el que lleva el QR
+impreso, el que se lee en la tarjeta de mesa y el que el build escribe en las
+etiquetas de compartir. Al ser dominio propio se puede cambiar de hosting cuando
+sea sin reimprimir un solo calco.
+
+El dominio está escrito en `build.mjs` (`ORIGIN`), no leído de las variables de
+Vercel: ese valor queda congelado dentro de cada build, y el deploy vivo estuvo
+anunciando el `*.vercel.app` viejo bastante después de conectar el propio. Si
+alguna vez cambia el dominio hay que tocar tres cosas: `ORIGIN`, el QR y la
+dirección impresa en `tools/tarjeta.html`.
 
 Las cabeceras que quedan configuradas:
 
@@ -106,9 +115,8 @@ Sin ella los chats caen al ícono, y el logo original es trazo blanco sobre fond
 transparente: se ve un cuadrado en blanco.
 
 La dirección de la imagen tiene que ser **absoluta**, así que el build la arma
-con el dominio de producción que Vercel expone en `VERCEL_PROJECT_PRODUCTION_URL`.
-Cuando se conecte un dominio propio, la tarjeta lo toma sola. Para generar fuera
-de Vercel: `SITE_URL=https://mi-dominio node build.mjs`.
+con el dominio de producción (`ORIGIN` en `build.mjs`, hoy `joy.pamboo.co`). Para
+apuntarla a otro dominio en una prueba: `SITE_URL=https://mi-dominio node build.mjs`.
 
 Las dos imágenes son fijas y se rehacen a mano, fotografiando las plantillas de
 `tools/` con Chrome. Desde la raíz del proyecto:
@@ -123,7 +131,7 @@ Se fotografía `og.html` a 1200×630 y `icono.html` a 512×512, y el resultado v
 
 Los chats **cachean la vista previa por URL**. Si se cambia la tarjeta, el `?v=`
 del build cambia solo con el contenido y la vuelven a pedir; para forzarlo antes,
-se comparte el enlace con cualquier parámetro pegado (`…vercel.app/?x=1`).
+se comparte el enlace con cualquier parámetro pegado (`joy.pamboo.co/?x=1`).
 
 ## QR para las mesas
 
@@ -131,35 +139,52 @@ En `impresion/`. El SVG es el que va a la imprenta: al ser vector no tiene
 resolución que se quede corta, sirve igual para una tarjeta de mesa que para un
 cartel.
 
-**Antes de imprimir, definir el dominio.** El QR lleva la dirección adentro: si
-se imprimen mil calcos con `carta-joy.vercel.app` y después se pasa a un dominio
-propio, hay que reimprimirlos todos. Con dominio propio, en cambio, se puede
-cambiar de hosting cuando sea sin tocar un solo calco. Para regenerarlo:
+**El QR lleva la dirección adentro.** Apunta a `https://joy.pamboo.co/`. Si
+alguna vez cambia la dirección hay que regenerarlo y reimprimir todo:
 
 ```bash
-uv run --with segno tools/qr.py https://carta.joywakepark.com
+uv run --with segno tools/qr.py https://joy.pamboo.co/
 ```
 
-El símbolo mide 33×33 módulos con las dos direcciones, así que cambiar de
-dominio no altera el diseño ni las medidas de la tarjeta.
+Con esa dirección el símbolo mide 29×29 módulos. Cambiar de dominio puede
+cambiar ese número, pero no el diseño ni las medidas de la tarjeta: el QR se
+escala al panel blanco, que es de tamaño fijo.
 
-**Tamaño mínimo al imprimir.** El símbolo tiene 41 módulos contando la zona
+Después de regenerar el SVG hay que actualizar a mano la dirección que se lee
+debajo del QR en `tools/tarjeta.html`, y rehacer el PNG y la tarjeta con Chrome:
+
+```bash
+python3 -m http.server 8765 &
+CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+
+# PNG de 2000 px: se fotografía el SVG a tamaño fijo.
+printf '<style>html,body{margin:0}img{display:block;width:2000px;height:2000px}</style>\n<img src="/impresion/qr-joy.svg">' > /tmp/qr.html
+"$CHROME" --headless --window-size=2000,2000 --default-background-color=FFFFFFFF \
+  --screenshot=impresion/qr-joy.png file:///tmp/qr.html
+
+# Tarjeta A6: 111x154 mm y sin márgenes ya vienen del @page de la plantilla.
+"$CHROME" --headless --no-pdf-header-footer --virtual-time-budget=4000 \
+  --print-to-pdf=impresion/tarjeta-mesa-a6.pdf http://127.0.0.1:8765/tools/tarjeta.html
+```
+
+**Tamaño mínimo al imprimir.** El símbolo tiene 37 módulos contando la zona
 muda. La regla práctica es que el lado del QR sea al menos la décima parte de la
 distancia desde la que se escanea: 3 cm para una tarjeta de mesa que se levanta
 con la mano, 6 cm o más para uno pegado en la barra que se lee desde un metro.
 La tarjeta A6 lo lleva a 5,8 cm, con holgura.
 
 **Verificado, no supuesto.** El QR se decodifica correctamente reducido hasta
-3,3 px por módulo, con desenfoque, ruido de sensor, contraste al 45 % y en
-cualquier ángulo de rotación. El logo del centro tapa el 8,2 % del símbolo y la
-corrección de errores es la más alta (H, tolera 30 %).
+3 px por módulo, con desenfoque, ruido de sensor, contraste al 45 % y en
+cualquier ángulo de rotación; también leído desde el PDF de la tarjeta. El logo
+del centro tapa el 8,6 % del símbolo y la corrección de errores es la más alta
+(H, tolera 30 %).
 
-Para regenerar la tarjeta hay que fotografiar `tools/tarjeta.html` con Chrome e
-imprimirla a PDF con tamaño de papel 111×154 mm y sin márgenes.
+A mano, sin línea de comandos: se abre `tools/tarjeta.html` en Chrome y se
+imprime a PDF con tamaño de papel 111×154 mm y sin márgenes.
 
 ## Decisiones
 
-**Contenido servido, no calculado.** El build escribe los 144 productos en el HTML.
+**Contenido servido, no calculado.** El build escribe los 150 productos en el HTML.
 El JavaScript solo agrega navegación: si no carga, la carta se lee igual.
 
 **Precios.** Las comidas llevan un valor único, tal como el PDF. Las bebidas llevan
@@ -219,7 +244,7 @@ todavía no llegó, así nunca funde a negro. Medido en 4G (1,6 Mbps, 150 ms):
 | Transferido | 513 KB | 922 KB |
 
 El texto de la carta aparece a los **0,93 s** y la foto de portada a los 2,5 s.
-Los 144 productos ya están en el HTML: se leen desde el primer pintado.
+Los 150 productos ya están en el HTML: se leen desde el primer pintado.
 
 ## Accesibilidad
 

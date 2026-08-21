@@ -18,7 +18,8 @@
  * ------------------
  *   veggie   -> el PDF marca el producto con el ícono hoja + tilde
  *   sintacc  -> el producto figura, con ese mismo nombre y precio, en el
- *               capítulo "SIN TACC" del PDF
+ *               capítulo "SIN TACC" del PDF, o el local lo declaró sin TACC
+ *               (ver "Agregados posteriores al PDF")
  *
  * No se usa el distintivo "vegano": la carta original nunca lo declara y
  * "veggie" no implica ausencia de lácteos ni huevo.
@@ -33,6 +34,14 @@
  *     suavignon blanc->Sauvignon Blanc, torrentes dulce->Torrontés Dulce,
  *     Gin P/ de los Apóstoles->Gin Príncipe de los Apóstoles,
  *     Sab.->Sabores, Aperol Spirit->Aperol Spritz.
+ *
+ * Agregados posteriores al PDF (pedido del local, agosto 2026):
+ *   · Sin TACC: "Pachata Joy con pan" $24.000 y las cuatro pizzas sin TACC
+ *     (Muzza $14.000, Napolitana $15.000, Especial $18.000, Ibérica $20.000).
+ *     Son productos propios del capítulo Sin TACC: no comparten precio con sus
+ *     homónimas del capítulo Pizzas, por eso esas no llevan el distintivo.
+ *   · Cervezas: "Michelob" $9.300, declarada sin TACC. Precio único: el local
+ *     lo pasó "a la carta", sin el par regular/efectivo del resto del capítulo.
  *
  * Anomalías del PDF que NO se corrigieron (requieren confirmación del local):
  *   · "Corona Sin Alcohol $9200 | $12.000": el efectivo es mayor que el regular.
@@ -85,9 +94,14 @@ export const CATEGORIES = [
     sectionTag: 'sintacc',
     items: [
       { n: 'Pachata Joy al plato', p: 23850 },
+      { n: 'Pachata Joy con pan', p: 24000 },
       { n: 'Papas Rústicas', p: 17320 },
       { n: 'Papas Joy', p: 23535 },
       { n: 'Papas Veggie', p: 18450, tags: ['veggie'] },
+      { n: 'Pizza Muzza', p: 14000 },
+      { n: 'Pizza Napolitana', p: 15000 },
+      { n: 'Pizza Especial', p: 18000 },
+      { n: 'Pizza Ibérica', p: 20000 },
       { n: 'César Sin Crutones', p: 17858 },
     ],
   },
@@ -155,6 +169,7 @@ export const CATEGORIES = [
       { n: 'Corona 330', r: 9200, e: 8000 },
       { n: 'Corona 710', r: 13800, e: 12000 },
       { n: 'Corona Sin Alcohol', r: 9200, e: 12000, check: true, note: 'Valores transcriptos tal como figuran en el PDF original: el precio en efectivo aparece por encima del regular. A confirmar con el local.' },
+      { n: 'Michelob', p: 9300, tags: ['sintacc'] },
     ],
   },
   {
